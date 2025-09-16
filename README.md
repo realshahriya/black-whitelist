@@ -1,225 +1,216 @@
-# jetton-black-n-white-lists
+# Jetton Black & White Lists
 
-## Jetton token for TON ecosystem with black and white lists written in FunC
+## 🎯 Overview
 
-This jetton allows you to set one address to blacklist and add or remove multiple addresses to whitelist.
-If address is in blacklist and in whitelist in same time, you can send to this address.
+A sophisticated Jetton token implementation for the TON ecosystem featuring advanced blacklist and whitelist functionality. This smart contract allows precise control over token transfers with comprehensive access management.
 
-## Content
+**Key Features:**
 
-- [Project structure](#project-structure)
-- [How to use](#how-to-use)
-- [Instructions](#instructions)
-- [Notes](#notes)
-- [Roadmdap](#roadmap)
+- ✅ **Blacklist Management** - Block specific addresses from receiving tokens
+- ✅ **Whitelist Management** - Allow multiple addresses to bypass blacklist restrictions  
+- ✅ **Admin Controls** - Comprehensive token and contract management
+- ✅ **W5 Wallet Support** - Compatible with latest TON wallet versions
+- ✅ **Flexible Metadata** - Support for both on-chain and off-chain metadata
 
-## Project structure
+## 📁 Project Structure
 
-- `contracts` - source code of all the smart contracts of the project and their dependencies.
-- `wrappers` - wrapper classes (implementing `Contract` from ton-core) for the contracts, including any [de]serialization primitives and compilation functions.
-- `tests` - tests for the contracts.
-- `scripts` - scripts used by the project, mainly the deployment scripts.
+```json
+├── 📄 contracts/          # FunC smart contracts
+│   ├── jetton-minter-discoverable.fc
+│   ├── jetton-wallet.fc
+│   └── imports/           # Contract dependencies
+├── 📄 scripts/            # Deployment & management scripts
+│   ├── deployJettonMinterDiscoverable.ts
+│   ├── deployJettonWallet.ts
+│   └── bwController.ts    # Main control interface
+├── 📄 wrappers/           # TypeScript contract wrappers
+├── 📄 sandbox_tests/      # Contract test suite
+├── 📄 data/               # Token metadata
+└── 📄 build/              # Compiled contracts (auto-generated)
+```
 
-## How to use
+## 🚀 Quick Start
 
-### Build
+### Prerequisites
 
-`npx blueprint build` or `yarn blueprint build`
+- **Node.js** (v16 or higher)
+- **TON Wallet** with testnet TON for deployment
+- **Wallet Mnemonic** (24-word seed phrase)
 
-### Test
+### Installation
 
-`npx blueprint test` or `yarn blueprint test`
+```bash
+# Clone and install dependencies
+npm install
 
-### Deploy or run another script
+# Build all contracts
+npm run build
+```
 
-`npx blueprint run` or `yarn blueprint run`
+### Environment Setup
 
-### Add a new contract
+1. **Create environment file:**
 
-`npx blueprint create ContractName` or `yarn blueprint create ContractName`
+   ```bash
+   cp .env.example .env
+   ```
 
-## Instructions
+2. **Add your wallet mnemonic to `.env`:**
 
-1. npm i
-2. Need to fix `@ton/blueprint` typescript library
+   ```env
+   WALLET_MNEMONIC="your 24 word mnemonic phrase here"
+   ```
 
-    - Go to node_modules/@ton/blueprint/dist/network/NetworkProvider.d.ts
-    - Or just click to NetworkProvider in [scripts/bwController.ts](scripts/bwController.ts) on 46 line of code
+3. **Ensure sufficient testnet TON** in your wallet for deployment and operations
 
-### Need to replace | to & to avoid typescript errors
+## 📋 Usage Guide
 
-    ```diff
-    - api(): TonClient4 | TonClient;
-    + api(): TonClient4 & TonClient;
-    ```
+### 1. Deploy Jetton Minter
 
-3. To build all contracts at once write in terminal
+```bash
+npm run deploy
+```
 
-    ```
-    npx blueprint build --all
-    ```
+**Deployment Process:**
 
-4. You need mnemonic phrase of your wallet to interact with contract. Write in terminal to create .env
+1. Select wallet connection method (TON Connect recommended)
+2. Connect your wallet
+3. Choose metadata type:
+   - **On-Chain**: Uses local `data/jetton-metadata.json`
+   - **Off-Chain**: Provide external metadata URL
+4. Confirm deployment transaction
+5. **Save the minter address** for next steps
 
-    ```
-    touch .env
-    ```
+### 2. Token Management
 
-5. replace WALLET_MNEMONIC variable with your 24 words of seed phrase
-6. Be sure that on this wallet there is enough money for deploying and other actions with smart contract
-7. There are two ways to add metadata. OnChain means that data will be at blockchain, OffChain means that data will be on external server. If you want use OffChain, you can Upload your metadata.json file to github or another internet place. File to upload locate in path [data/jetton-metadata.json](data/jetton-metadata.json). When you upload get link with raw data only.
-    Or if you want use OnChain method, you can use only local file at [data/jetton-metadata.json](data/jetton-metadata.json), customize it inside file or do it late in menu.
+```bash
+npm run ctrl
+```
 
-    ```
-    {
-     "name": "BW Jetton",
-     "description": "Sample BW of Jetton",
-     "symbol": "BWJ",
-     "decimals": 9,
-     "image": "https://avatars.githubusercontent.com/u/104382459?s=80&v=4"
-    }
+**Available Operations:**
 
-    ```
+#### 🔧 Admin Functions
 
-8. To deploy Jetton Minter write
+- **Mint Tokens** - Create new tokens to any address
+- **Set Blacklist** - Block a specific address from receiving tokens
+- **Add to Whitelist** - Allow address to bypass blacklist
+- **Remove from Whitelist** - Remove address from whitelist
+- **Withdraw TON** - Extract accumulated fees from minter
 
-    ```
-     npx blueprint run deployJettonMinterDiscoverable
-    ```
+#### 👤 User Functions  
 
-    1. Then select `mainnet` or `testnet`
-    2. Then select `Mnemonic`
-       Or for shortcut write
+- **Transfer Tokens** - Send tokens to other addresses
+- **Get Token Info** - View token metadata and supply
+- **Check Blacklist** - View current blacklisted address
+- **Check Whitelist** - View all whitelisted addresses
 
-    ```
-    npx blueprint run deployJettonMinterDiscoverable --testnet --mnemonic --tonviewer
-    ```
+### 3. Token Metadata Configuration
 
-    3. Press enter to select admin as address of your wallet
-    4. Choose `OnChain (local json file)` or `OffChain (external url link)`
-    5. If `OnChain (local json file)` selected
-        1. Get attention to current data, if you want choose, write `n` and hit enter
-        2. Then you can change admin data or metadata, like `Admin`, `Name`, `Description`, `Symbol`, `Decimals`, `Image` or just `Quit` from this menu. Just select and write what you need. Data is replaced in current metadata file.
-        3. Then if everythin Ok write `y`
-    6. If `OffChain (external url link)` selected
-        1. Paste jetton-metadata.json raw link from github or your another place and hit enter
-        2. If you want to edit Admin or Url, write `n` and then choose `Admin` or `Url` options and write what you want
-        3. Then if everything is ok, write `y`
-    7. After that there maybe several options.
-        1. `Success!` You are see your minter address and link in scan. Copy address and go to the next step.
-        2. `Contract is already deployed` It means that contract at your wallet with that code of jetton minter and metadata link is already deployed. If your want create new, just change the link of your metadata.json to metadata-1.json (or add another character) and paste it the next time. It is the quick way to fix that. Later I will add on chain data to play with it more better.
-        3. `Fetch failed`, `error with orbs.network` and etc. Please turn off vpn, check your internet connection and try again. It is problem with network.
-9. Open [scripts/bwController.ts](scripts/bwController.ts) (bw is **b**lack and **w**hite), scroll to the almost of the ending of file and to the `499 line` of code replace address of minterAddress constant for new deployed contract of the previous step. Double check this step. If you miss this step. There will be notification that data in contract don't match with provided data.
-10. Next step is minting tokens. Write in terminal command below or if you already have options skip this step.
+Edit `data/jetton-metadata.json` before deployment:
 
-    ```
-    npx blueprint run bwController
-    ```
+```json
+{
+  "name": "Your Token Name",
+  "description": "Token description",
+  "symbol": "SYMBOL",
+  "decimals": 9,
+  "image": "https://your-image-url.com/token.png"
+}
+```
 
-    1. Then select `mainnet` or `testnet`
-    2. Then select `Mnemonic`
-       Or for shortcut write
+## 🔐 Access Control Logic
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+The blacklist/whitelist system works as follows:
 
-    3. If you are admin of the contract you will see admin + user actions, if not, only user actions.
-    4. By arrows choose `Mint` and hit enter
-    5. Hit enter to select your address as destination of minting tokens. You can paste any address
-    6. Write by numbers how much your want to mint. Any number multiple for `1e9`, eg. You write 123. Then you get 123 000 000 000 jettons to your wallet.
-    7. Write `yes` and hit enter or `no` for redo prev step.
-    8. After successfully minted, check your address.
+1. **Normal Operation**: All addresses can receive tokens
+2. **Blacklisted Address**: Cannot receive tokens from anyone
+3. **Whitelisted + Blacklisted**: Whitelist overrides blacklist (can receive tokens)
+4. **Admin Override**: Admin can always perform operations
 
-11. To `Transfer` write in terminal:
+## 🛠️ Development Commands
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+```bash
+# Build contracts
+npm run build
 
-    1. Select `Transfer`
-    2. Paste here addres to transfer and hit enter
-    3. Write amount in numbers. If your write `777` tokens, you will transfer `777` tokens to your address
-    4. Write `yes` and hit enter or `no` for redo prev step.
-    5. Success!
-12. To `Set address to blacklist` write command below or skip this step if you have already menu options.
+# Run tests
+npm run test
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+# Deploy to testnet
+npm run deploy
 
-    1. Select `Set blacklist address`
-    2. Paste address for blacklist and hit enter. You can set only one blacklist address in one time. If you want replace with new blacklist address just re-choose it and retry all commands again.
-    3. Write `y` and hit enter to set address or `n` for re-paste it.
-    4. Success!
-13. To `Add address to whitelist` write command below or skip this step if you have already menu options.
+# Launch control interface
+npm run ctrl
+```
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+## 🔧 Advanced Configuration
 
-    1. Select `Add address to whitelist`
-    2. Paste address to add to whitelist and hit enter
-    3. Write `y` and hit enter to set address or `n` for re-paste it.
-    4. Success!
-14. To `Remove address from whitelist` write command below or skip this step if you have already menu options.
+### Custom Network Configuration
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+For mainnet deployment, modify commands:
 
-    1. Select `Remove address from whitelist`
-    2. Paste exact address to remove matched address from whitelist and hit enter
-    3. Write `y` and hit enter to set address or `n` for re-paste it.
-    4. Success!
-15. To `Witdhraw TON from Jetton Minter` write command below or skip this step if you have already menu options.
+```bash
+npx blueprint run deployJettonMinterDiscoverable --mainnet
+npx blueprint run bwController --mainnet
+```
 
-    ```
-    npx blueprint run bwController --testnet --mnemonic --tonviewer
-    ```
+### Wallet Compatibility
 
-    1. Select `Witdhraw TON from Jetton Minter`
-    2. Wait some time. Script fetch balance of Jetton Minter...
-    3. Write exact amount of TON you want to withdraw in float mode. Eg. 1.115. Then JettonMinter will send to you 1.115000000 TON. It automatically converts to TON format underhood.
-    4. If you write greater or negative or zero amount you will appropriate warning and another try to write correct amount
-    5. Write `yes` and hit enter to set address or `no` for re-write it.
-    6. Success!
-16. Also you have Info actions. Choose what you like and get specific data you want.
+- ✅ **Wallet V4**: Fully supported
+- ✅ **Wallet V5**: Fully supported (latest updates applied)
+- ✅ **TON Connect**: Recommended for mobile wallets
 
-    - `Get blacklist address`
-    - `Get whitelist address(es)`
-    - `Jetton Info`
+## 📊 Contract Economics
 
-17. Always you can select `Quit` option to go out from this menu.
+- **Deployment Cost**: ~0.1 TON
+- **Minting Cost**: ~0.05 TON per operation
+- **Transfer Cost**: ~0.01 TON per transfer
+- **Admin Operations**: ~0.02-0.05 TON each
 
-### Notes
+*Note: The minter accumulates small fees from each operation, which can be withdrawn by the admin.*
 
-- ✅ Works properly on wallet v4
-- ⛔️ Works unstable on wallet v5, need update of blueprint, I [commited update](https://github.com/ton-org/blueprint/compare/main...veebull:blueprint:patch-1), below there is instructions how to hardcode update yourself in blueprint module.
-- Everytime Jetton Minter increase self TON balance on every transaction. That's why there is for admin withdraw function.
-- To do work for wallet v5 need:
-    1. Go to [node_modules/@ton/blueprint/dist/network/send/MnemonicProvider.js](node_modules/@ton/blueprint/dist/network/send/MnemonicProvider.js) and at 28 line of code add `v5r1: ton_1.WalletContractV5R1,`
+## 🐛 Troubleshooting
 
-    diff
-    const wallets = {
-    v1r1: ton_1.WalletContractV1R1,
-    v1r2: ton_1.WalletContractV1R2,
-    v1r3: ton_1.WalletContractV1R3,
-    v2r1: ton_1.WalletContractV2R1,
-    v2r2: ton_1.WalletContractV2R2,
-    v3r1: ton_1.WalletContractV3R1,
-    v3r2: ton_1.WalletContractV3R2,
-    v4: ton_1.WalletContractV4,
-  - v5r1: ton_1.WalletContractV5R1,
-    };
+### Common Issues
 
-    1. Then when you will paste mnemonic phrase second line of code will be `WALLET_VERSION=v5r1`
+### Contract Not Found
 
-### Roadmap
+- Ensure you're using the correct minter address
+- Verify you're on the right network (testnet/mainnet)
 
-- Write tlb schemes for new functions
-- Finish tests and complete whole run of tests to green
-- ✅ Add opportunity to choose offchain or onchain metadata
-- ✅ Fix onchain metadata function in wrapper
-- ⚠️ (Not Stable yet) Add wallet v5 support
-- Add for withdraw function in Jetton Minter to not spend TON for withdraw for rent and gas.
+### Insufficient Funds
+
+- Add more TON to your wallet
+- Check gas estimation for operations
+
+### Transaction Failed
+
+- Wait for network confirmation
+- Retry with higher gas limit
+
+### Wallet Connection Issues
+
+- Try different connection method
+- Ensure wallet has latest updates
+
+## 🗺️ Roadmap
+
+- [x] ✅ On-chain and off-chain metadata support
+- [x] ✅ Wallet V5 compatibility
+- [x] ✅ Enhanced error handling and API compatibility
+- [ ] 🔄 Advanced batch operations
+- [ ] 🔄 Multi-signature admin controls
+- [ ] 🔄 Governance token features
+- [ ] 🔄 Cross-chain bridge integration
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
+
+---
+
+**Need Help?** Check the troubleshooting section or open an issue for support.

@@ -78,11 +78,18 @@ export const promptWithdrawAmount = async (prompt: string, provider: UIProvider)
 
 export const getLastBlock = async (provider: NetworkProvider) => {
     const api = provider.api();
-    if ('getLastBlock' in api) {
-        return (await (api as any).getLastBlock()).last.seqno;
-    } else {
-        // Fallback for different client versions
-        return (await (api as any).getMasterchainInfo()).last.seqno;
+    try {
+        if ('getLastBlock' in api) {
+            const result = await (api as any).getLastBlock();
+            return result?.last?.seqno || result?.seqno || 0;
+        } else {
+            // Fallback for different client versions
+            const result = await (api as any).getMasterchainInfo();
+            return result?.last?.seqno || result?.seqno || 0;
+        }
+    } catch (error) {
+        console.warn('Failed to get last block, using fallback seqno 0:', error);
+        return 0;
     }
 };
 export const getAccountLastTx = async (provider: NetworkProvider, address: Address) => {

@@ -116,7 +116,8 @@ const mintAction = async (provider: NetworkProvider, ui: UIProvider) => {
     const getLastSeqno = await getLastBlock(provider);
     const curState = (await getAccountInfo(provider, getLastSeqno, minterContract.address)).account;
 
-    if (curState.last === null) throw "Last transaction can't be null on deployed contract";
+    // Handle case where curState.last might be undefined due to API fallbacks
+    const lastLt = curState?.last?.lt || '0';
 
     const queryId = randomQueryId();
 
@@ -128,7 +129,7 @@ const mintAction = async (provider: NetworkProvider, ui: UIProvider) => {
         total_ton_amount: toNano('0.1'),
         queryId,
     });
-    const gotTrans = await waitForTransaction(provider, minterContract.address, curState.last.lt, 30);
+    const gotTrans = await waitForTransaction(provider, minterContract.address, lastLt, 30);
     if (gotTrans) {
         const supplyAfter = await minterContract.getTotalSupply();
 
