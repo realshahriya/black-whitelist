@@ -5,32 +5,38 @@ export abstract class Op {
     static excesses = 0xd53276db;
     static burn = 0x595f07bc;
     static burn_notification = 0x7bdd97de;
-    
+
     static provide_wallet_address = 0x2c76b973;
     static take_wallet_address = 0xd1735400;
-    static mint = 0x642b7d07;
-    static change_admin = 0x6501f354;
-    static claim_admin = 0xfb88e119;
-    static drop_admin = 0x7431f221;
-    static upgrade = 0x2508d66a;
-    static call_to = 0x235caf52;
-    static top_up = 0xd372158c;
-    static change_metadata_url = 0xcb862902;
-    static set_status = 0xeed236d3;
+    static set_blacklist = 0x5365744c;
+    static add_to_whitelist = 0x41646457;
+    static remove_from_whitelist = 0x52656d57;
+    static check_blacklist = 0x43686563;
+    static check_blacklist_response = 0x5f8af154;
+    static check_whitelist = 0x43686562;
+    static check_whitelist_response = 0x5f8af155;
+    static check_bwlist = 0x5f8af156;
+    static decrease_balance = 0x43686565;
+    static withdraw_ton = 0x43686566;
+
+    static mint = 21;
+    static change_admin = 3;
+    static change_content = 4;
 }
 
 export abstract class Errors {
-    static invalid_op = 72;
-    static wrong_op = 0xffff;
-    static not_owner = 73;
-    static not_valid_wallet = 74;
-    static wrong_workchain = 333;
-    
-    static contract_locked = 45;
-    static balance_error = 47;
-    static not_enough_gas = 48;
-    static invalid_mesage = 49;
+    static invalid_op = 709;
+    static not_admin = 73;
+    static unouthorized_burn = 74;
     static discovery_fee_not_matched = 75;
+    static not_jetton_minter = 76;
+    static wrong_op = 0xffff;
+    static not_owner = 705;
+    static not_enough_ton = 710;
+    static not_enough_gas = 707;
+    static not_valid_wallet = 708;
+    static wrong_workchain = 333;
+    static balance_error = 706;
+    static transfer_forbidden = 711;
+    static insuficent_amount = 1000;
 }
-
-

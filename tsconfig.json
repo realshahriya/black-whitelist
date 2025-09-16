@@ -21,6 +21,7 @@
         "node_modules",
         "dist",
         "sandbox_tests",
+        "referance",
         "**/*.spec.ts",
         "**/*.test.ts"
     ]
