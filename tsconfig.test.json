@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "types": ["node", "jest", "@ton/test-utils"]
+    },
+    "include": [
+        "sandbox_tests/**/*.ts",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ],
+    "exclude": []
+}
