@@ -125,8 +125,13 @@ export const waitForTransaction = async (
         ui.write(`Awaiting transaction completion (${++count}/${maxRetry})`);
         await sleep(interval);
         const curState = await getAccountInfo(provider, lastBlock, address);
-        if (curState.account.last !== null) {
+        
+        // Handle the case where curState.account.last might be null or undefined
+        if (curState && curState.account && curState.account.last !== null && curState.account.last !== undefined) {
             done = curState.account.last.lt !== curTx;
+        } else {
+            // If no last transaction info, consider it not done yet
+            done = false;
         }
     } while (!done && count < maxRetry);
     return done;

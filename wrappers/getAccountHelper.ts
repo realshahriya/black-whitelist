@@ -8,28 +8,52 @@ export const getAccountInfo = async (provider: NetworkProvider, seqno: number, a
     const api = provider.api();
     
     try {
-        if ('getAccount' in api) {
-            // TonClient4 method
-            return await (api as any).getAccount(seqno, address);
-        } else if ('getAccountLite' in api) {
-            // TonClient fallback - use getAccountLite
+        // Try TonClient4 method first
+        if ('getAccountLite' in api) {
             return await (api as any).getAccountLite(seqno, address);
-        } else if ('getAccountState' in api) {
-            // Another fallback method
-            return await (api as any).getAccountState(address);
+        } else if ('getAccount' in api) {
+            // Try with seqno parameter
+            return await (api as any).getAccount(seqno, address);
         } else {
-            // Final fallback - use provider's getAccount method
+            // Use provider's direct method as fallback
             console.warn('Using fallback account info method');
-            return await (api as any).getAccount(address);
+            const result = await provider.getContractState(address);
+            return {
+                account: {
+                    state: result.state,
+                    balance: { coins: result.balance.toString() },
+                    last: result.last ? {
+                        lt: result.last.lt,
+                        hash: result.last.hash
+                    } : null
+                }
+            };
         }
     } catch (error) {
         console.warn('Failed to get account info, using fallback:', error);
-        // Return a basic account structure as fallback
-        return {
-            account: {
-                state: { type: 'uninit' },
-                balance: { coins: '0' }
-            }
-        };
+        try {
+            // Final fallback using provider's getContractState method
+            const result = await provider.getContractState(address);
+            return {
+                account: {
+                    state: result.state,
+                    balance: { coins: result.balance.toString() },
+                    last: result.last ? {
+                        lt: result.last.lt,
+                        hash: result.last.hash
+                    } : null
+                }
+            };
+        } catch (fallbackError) {
+            console.warn('All methods failed, returning default structure:', fallbackError);
+            // Return a basic account structure as final fallback
+            return {
+                account: {
+                    state: { type: 'uninit' },
+                    balance: { coins: '0' },
+                    last: null
+                }
+            };
+        }
     }
 };
