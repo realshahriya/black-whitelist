@@ -5,7 +5,6 @@
 A sophisticated Jetton token implementation for the TON ecosystem featuring advanced blacklist and whitelist functionality. This smart contract allows precise control over token transfers with comprehensive access management.
 
 **Key Features:**
-
 - ✅ **Blacklist Management** - Block specific addresses from receiving tokens
 - ✅ **Whitelist Management** - Allow multiple addresses to bypass blacklist restrictions  
 - ✅ **Admin Controls** - Comprehensive token and contract management
@@ -14,7 +13,7 @@ A sophisticated Jetton token implementation for the TON ecosystem featuring adva
 
 ## 📁 Project Structure
 
-```json
+```
 ├── 📄 contracts/          # FunC smart contracts
 │   ├── jetton-minter-discoverable.fc
 │   ├── jetton-wallet.fc
@@ -50,13 +49,11 @@ npm run build
 ### Environment Setup
 
 1. **Create environment file:**
-
    ```bash
    cp .env.example .env
    ```
 
 2. **Add your wallet mnemonic to `.env`:**
-
    ```env
    WALLET_MNEMONIC="your 24 word mnemonic phrase here"
    ```
@@ -72,7 +69,6 @@ npm run deploy
 ```
 
 **Deployment Process:**
-
 1. Select wallet connection method (TON Connect recommended)
 2. Connect your wallet
 3. Choose metadata type:
@@ -90,7 +86,6 @@ npm run ctrl
 **Available Operations:**
 
 #### 🔧 Admin Functions
-
 - **Mint Tokens** - Create new tokens to any address
 - **Set Blacklist** - Block a specific address from receiving tokens
 - **Add to Whitelist** - Allow address to bypass blacklist
@@ -98,7 +93,6 @@ npm run ctrl
 - **Withdraw TON** - Extract accumulated fees from minter
 
 #### 👤 User Functions  
-
 - **Transfer Tokens** - Send tokens to other addresses
 - **Get Token Info** - View token metadata and supply
 - **Check Blacklist** - View current blacklisted address
@@ -148,7 +142,6 @@ npm run ctrl
 ### Custom Network Configuration
 
 For mainnet deployment, modify commands:
-
 ```bash
 npx blueprint run deployJettonMinterDiscoverable --mainnet
 npx blueprint run bwController --mainnet
@@ -173,23 +166,19 @@ npx blueprint run bwController --mainnet
 
 ### Common Issues
 
-### Contract Not Found
-
+**"Contract not found"**
 - Ensure you're using the correct minter address
 - Verify you're on the right network (testnet/mainnet)
 
-### Insufficient Funds
-
+**"Insufficient funds"**
 - Add more TON to your wallet
 - Check gas estimation for operations
 
-### Transaction Failed
-
+**"Transaction failed"**
 - Wait for network confirmation
 - Retry with higher gas limit
 
-### Wallet Connection Issues
-
+**"Wallet connection issues"**
 - Try different connection method
 - Ensure wallet has latest updates
 

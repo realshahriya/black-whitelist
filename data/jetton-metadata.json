@@ -1,7 +1,7 @@
 {
-  "name": "BBBBB_JET",
-  "description": "Sample BW of Jetton",
-  "symbol": "BWJ",
+  "name": "example",
+  "description": "Sample of Jetton",
+  "symbol": "example",
   "decimals": 9,
-  "image": "https://avatars.githubusercontent.com/u/104382459?s=80&v=5"
+  "image": "https://example.com/image.png"
 }
